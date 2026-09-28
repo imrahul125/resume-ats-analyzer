@@ -1,0 +1,31 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# JavaScript
+node_modules/
+dist/
+build/
+
+# Private or generated application data
+uploads/
+temp/
+generated/
+
+# Logs
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
