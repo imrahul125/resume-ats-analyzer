@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  // Read only VITE_-prefixed public settings from the repository-root .env.
+  envDir: '..',
   plugins: [react(), tailwindcss()],
   server: {
     host: '127.0.0.1',

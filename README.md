@@ -8,7 +8,7 @@ ResumeLens compares a resume with a specific job description, explains the match
 
 ## Project status
 
-Repository setup is in progress. The application, live demo, screenshots, and complete setup instructions will be added as their development phases are completed.
+The local landing page, FastAPI status routes, PostgreSQL connection, and first Alembic migration are working. Resume upload and analysis, AI recommendations, tailoring, and public deployment are still in progress.
 
 ## Planned features
 
@@ -49,14 +49,41 @@ The resume is the source of truth. AI-assisted recommendations and tailoring mus
 
 ## Local setup
 
-Detailed setup instructions will be added as the frontend and backend are created. The intended local services are:
+Prerequisites: Python, Node.js/npm, Git, and a running local PostgreSQL service.
+The backend and frontend use separate development servers.
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:8000`
-- API documentation: `http://localhost:8000/docs`
-- PostgreSQL database: `resume_ats` (to be created during the database phase)
+### Backend and database
 
-Copy `.env.example` to the appropriate local environment file and fill in secrets locally. Never commit `.env` files or real credentials.
+From PowerShell at the repository root:
+
+```powershell
+Set-Location .\backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python scripts\configure_local_database.py
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+The database helper asks for the PostgreSQL port and the `resume_app` password;
+password input is masked. It writes the connection URL into the ignored
+repository-root `.env`. Do not commit or share that file.
+
+In a second PowerShell window, from the repository root:
+
+```powershell
+Set-Location .\frontend
+npm ci
+npm run dev
+```
+
+The frontend is at `http://127.0.0.1:5173`, the backend is at
+`http://127.0.0.1:8000`, and FastAPI's interactive documentation is at
+`http://127.0.0.1:8000/docs`. Apply committed database migrations from the
+`backend` directory with `python -m alembic -c alembic.ini upgrade head`.
+
+The root `.env.example` documents local settings. Put real credentials only in
+the ignored `.env` file and never expose server secrets to the frontend.
 
 ## Privacy and security
 
