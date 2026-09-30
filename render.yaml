@@ -12,12 +12,8 @@ services:
     autoDeployTrigger: commit
     envVars:
       - key: PYTHON_VERSION
-        value: "3.13"
+        value: "3.13.15"
       - key: ENVIRONMENT
         value: production
       - key: UPLOAD_MAX_MB
         value: "10"
-      - key: DATABASE_URL
-        sync: false
-      - key: CORS_ORIGINS
-        sync: false

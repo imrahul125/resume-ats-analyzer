@@ -16,12 +16,15 @@ The repository-root `render.yaml` describes the backend service:
 - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Health check: `/health`
 - Automatic deployment: on each commit to the linked branch
+- Python runtime: `3.13.15`
 
 To create it, sign in to Render, connect the GitHub repository, and create a
-Blueprint from the repository's `render.yaml`. During the initial Blueprint
-flow, provide the requested `DATABASE_URL` and `CORS_ORIGINS` values in Render's
-dashboard. Never put either value into `render.yaml` or Git. After creating the
-Vercel project, update `CORS_ORIGINS` to the exact Vercel production origin.
+Blueprint from the repository's `render.yaml`. The first preview can run without
+`DATABASE_URL`: `/health` and the API's basic routes do not require PostgreSQL,
+but `/health/database` will report unavailable until Supabase is connected.
+After creating the Vercel project, set `CORS_ORIGINS` in the Render dashboard
+to the exact Vercel production origin. Do not put database credentials or other
+secrets in `render.yaml` or Git.
 
 The `free` plan is suitable for an early preview and may spin down when idle.
 The Render service listens on the platform-provided `$PORT`; it must bind to
@@ -39,7 +42,9 @@ characters before storing the URL.
 
 After configuring the production database, apply the committed Alembic
 migrations using the production connection before enabling database-dependent
-features. Do not use the local database URL in Render.
+features. Add the production URL as Render's `DATABASE_URL` environment
+variable. Do not use the local database URL in Render. Keep the connection
+string private and never paste it into chat or commit it.
 
 ## Vercel frontend
 
