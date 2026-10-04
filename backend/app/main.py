@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import get_settings
 from app.core.database import check_database_connection
+from app.api.routes import router as api_router
 
 settings = get_settings()
 
@@ -22,6 +23,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
 )
+
+app.include_router(api_router)
 
 
 @app.get("/", tags=["status"])

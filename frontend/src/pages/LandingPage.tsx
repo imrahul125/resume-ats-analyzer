@@ -1,5 +1,5 @@
 import BrandMark from '../components/BrandMark'
-import ApiStatusBadge from '../components/ApiStatusBadge'
+import AnalysisWorkspace from '../components/AnalysisWorkspace'
 import FeatureCard from '../components/FeatureCard'
 
 const features = [
@@ -218,18 +218,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-5 pb-20 sm:px-8 sm:pb-24" id="analysis">
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-9 text-white shadow-xl shadow-slate-300/50 sm:px-10 sm:py-12">
-            <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">Analysis workspace</p>
-                <h2 className="mt-3 max-w-2xl text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">Your resume and job description will meet here.</h2>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">The upload and analysis flow is still in development. This preview does not upload or store a resume.</p>
-              </div>
-              <ApiStatusBadge />
-            </div>
-          </div>
-        </section>
+        <AnalysisWorkspace />
       </main>
 
       <footer className="border-t border-slate-200 bg-white">

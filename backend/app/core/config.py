@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     database_url: str | None = None
     environment: str = "development"
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+    upload_max_mb: int = 10
 
     @property
     def allowed_cors_origins(self) -> list[str]:

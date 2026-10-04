@@ -31,3 +31,39 @@ export async function checkDatabaseHealth(): Promise<DatabaseHealthResponse> {
 
   return result as DatabaseHealthResponse
 }
+import type { AnalysisResult } from '../types/analysis'
+
+
+interface AnalyzeRequest {
+  file: File
+  jobDescription: string
+  jobTitle?: string
+  company?: string
+}
+
+export async function analyzeResume(input: AnalyzeRequest): Promise<AnalysisResult> {
+  const body = new FormData()
+  body.append('resume_file', input.file)
+  body.append('job_description', input.jobDescription)
+  if (input.jobTitle?.trim()) body.append('job_title', input.jobTitle.trim())
+  if (input.company?.trim()) body.append('company', input.company.trim())
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/analyze`, {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body,
+  })
+  if (!response.ok) {
+    let message = `Analysis failed (HTTP ${response.status}). Please try again.`
+    try {
+      const payload: unknown = await response.json()
+      if (typeof payload === 'object' && payload !== null && 'detail' in payload && typeof payload.detail === 'string') {
+        message = payload.detail
+      }
+    } catch {
+      // Keep the safe status-based message when the server returned no JSON.
+    }
+    throw new Error(message)
+  }
+  return (await response.json()) as AnalysisResult
+}
