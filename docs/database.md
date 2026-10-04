@@ -40,8 +40,10 @@ erDiagram
 
 IDs use UUIDs. Foreign keys connect related rows, and database constraints
 reject out-of-range scores, invalid statuses, and duplicate metric keys within
-one analysis. The schema exists now; API routes that create these records will
-be added in later phases.
+one analysis. `POST /api/v1/analyze` creates the resume metadata, job
+description, analysis, metrics, and recommendations in one transaction. The
+uploaded file and extracted text are not written to these tables; only the
+file's media type and SHA-256 digest are kept.
 
 ## Migration workflow
 
@@ -66,6 +68,9 @@ Check the applied revision:
 .\.venv\Scripts\python.exe -m alembic -c alembic.ini current
 ```
 
-Migrations are committed alongside model changes. Production migrations will
-be run as an explicit deployment step after the production database is
-configured; the API does not create or alter tables at startup.
+Migrations are committed alongside model changes. The Render Free service does
+not support a pre-deploy command, so the current Blueprint runs
+`alembic upgrade head` in its build command after installing dependencies.
+Alembic applies unapplied revisions and is a no-op when the database is already
+at the latest revision. The API itself does not create or alter tables at
+startup.
