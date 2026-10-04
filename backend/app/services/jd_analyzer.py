@@ -109,7 +109,7 @@ def extract_job_requirements(text: str) -> list[SkillRequirement]:
     lines = [
         sentence.strip(" \t-•▪")
         for source_line in source_lines
-        for sentence in re.split(r"(?<=[.!?;])\s+|[•▪]", source_line)
+        for sentence in re.split(r"(?<=[.!?;,])\s+|[•▪]", source_line)
         if sentence.strip(" \t-•▪")
     ]
     for line in lines:

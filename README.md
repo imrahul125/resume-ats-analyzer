@@ -8,7 +8,7 @@ ResumeLens compares a resume with a specific job description, explains the match
 
 ## Project status
 
-The landing page, PDF/DOCX upload, deterministic analysis API, weighted Job Match Score, database persistence, and results view are implemented in the current development branch. The public Render and Vercel services were set up earlier; this new analysis flow still needs to be committed and deployed, then verified against the production database. Gemini recommendations, semantic embeddings, resume tailoring, PDF export, and authentication are not implemented yet.
+The landing page, PDF/DOCX upload, deterministic analysis API, weighted Job Match Score, database persistence, and results view are implemented in the current working tree. This analysis flow still needs to be committed and deployed, then verified against the production database. Gemini recommendations, semantic embeddings, resume tailoring, PDF export, and authentication are not implemented yet.
 
 ## Current features
 

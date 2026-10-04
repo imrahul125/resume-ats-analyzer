@@ -5,6 +5,11 @@ import unittest
 
 from docx import Document
 from pypdf import PdfWriter
+from pypdf.generic import (
+    DecodedStreamObject,
+    DictionaryObject,
+    NameObject,
+)
 
 from app.services.jd_analyzer import (
     classify_skill_in_resume,
@@ -40,6 +45,28 @@ class ResumeParserTests(unittest.TestCase):
         stream = BytesIO()
         writer.write(stream)
         self.assertEqual(parse_pdf(stream.getvalue()), "")
+
+    def test_parse_pdf_extracts_selectable_text(self) -> None:
+        writer = PdfWriter()
+        page = writer.add_blank_page(width=612, height=792)
+        font = DictionaryObject(
+            {
+                NameObject("/Type"): NameObject("/Font"),
+                NameObject("/Subtype"): NameObject("/Type1"),
+                NameObject("/BaseFont"): NameObject("/Helvetica"),
+            }
+        )
+        font_ref = writer._add_object(font)
+        page[NameObject("/Resources")] = DictionaryObject(
+            {NameObject("/Font"): DictionaryObject({NameObject("/F1"): font_ref})}
+        )
+        content = DecodedStreamObject()
+        content.set_data(b"BT /F1 12 Tf 40 700 Td (Python Engineer Resume) Tj ET")
+        page[NameObject("/Contents")] = writer._add_object(content)
+        stream = BytesIO()
+        writer.write(stream)
+
+        self.assertIn("Python Engineer Resume", parse_pdf(stream.getvalue()))
 
 
 class SkillAndScoringTests(unittest.TestCase):

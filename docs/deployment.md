@@ -12,7 +12,7 @@ The repository-root `render.yaml` describes the backend service:
 - Runtime: native Python (no Docker)
 - Branch: `main`
 - Root directory: `backend`
-- Build command: `pip install -r requirements.txt`
+- Build command: `pip install -r requirements.txt && alembic upgrade head`
 - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Health check: `/health`
 - Automatic deployment: on each commit to the linked branch
@@ -40,11 +40,12 @@ them manually. Keep the full string private and add it as Render's
 `DATABASE_URL` environment variable. Percent-encode reserved password
 characters before storing the URL.
 
-After configuring the production database, apply the committed Alembic
-migrations using the production connection before enabling database-dependent
-features. Add the production URL as Render's `DATABASE_URL` environment
-variable. Do not use the local database URL in Render. Keep the connection
-string private and never paste it into chat or commit it.
+After configuring the production database as Render's `DATABASE_URL`, the
+Blueprint build command installs dependencies and applies committed Alembic
+migrations before starting the API. Check the build log for the applied
+revision and verify it in Supabase with `SELECT version_num FROM
+public.alembic_version;`. Do not use the local database URL in Render. Keep the
+connection string private and never paste it into chat or commit it.
 
 ## Vercel frontend
 
@@ -55,16 +56,20 @@ In Vercel, import the same GitHub repository as a separate project and set:
 - Build command: `npm run build`
 - Output directory: `dist`
 - Production branch: `main`
-- Environment variable: `VITE_API_BASE_URL=https://<your-render-service>.onrender.com`
+- Environment variable: `VITE_API_BASE_URL=https://resumelens-api-mbxb.onrender.com`
 
-Set `VITE_API_BASE_URL` for the Production environment. It is a public API URL,
-not a secret. Do not put `DATABASE_URL`, `GEMINI_API_KEY`, or `JWT_SECRET` in
-Vercel variables prefixed with `VITE_`.
+Set `VITE_API_BASE_URL` for the Production environment. The frontend also has
+this Render URL as its production fallback, so the deployed app can connect if
+the Vercel variable is missing. It is a public API URL, not a secret. Do not put
+`DATABASE_URL`, `GEMINI_API_KEY`, or `JWT_SECRET` in Vercel variables prefixed
+with `VITE_`.
 
 Vercel's Git integration creates deployments from the connected repository;
-confirm that `main` is selected as the production branch. When the Vercel URL
-is available, add its exact origin to Render's `CORS_ORIGINS`, save the Render
-environment change, and verify the API from the deployed site.
+confirm that `main` is selected as the production branch. `render.yaml` allows
+the current production origin `https://resume-ats-analyzer-eta.vercel.app`.
+If you add a Vercel alias or custom domain, add its origin to `CORS_ORIGINS` in
+the Render dashboard (comma-separated, with no trailing slash) or update
+`render.yaml`, then redeploy the API.
 
 ## Prove automatic deployment
 

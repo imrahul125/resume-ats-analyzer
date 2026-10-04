@@ -34,14 +34,9 @@ def _ratio(points: float, total: int, neutral: int = 50) -> int:
 def _skill_score(requirements: list[SkillRequirement], resume_text: str) -> tuple[int, list[dict[str, str]]]:
     results: list[dict[str, str]] = []
     points = 0.0
-    required_points = 0.0
-    required_total = 0
     for item in requirements:
         status = classify_skill_in_resume(resume_text, item.name)
         points += {"matched": 1.0, "partial": 0.5, "missing": 0.0}[status]
-        if item.requirement == "required":
-            required_total += 1
-            required_points += {"matched": 1.0, "partial": 0.5, "missing": 0.0}[status]
         results.append({"name": item.name, "status": status, "requirement": item.requirement})
     return _ratio(points, len(requirements), neutral=0), results
 

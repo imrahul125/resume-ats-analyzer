@@ -15,5 +15,7 @@ services:
         value: "3.13.15"
       - key: ENVIRONMENT
         value: production
+      - key: CORS_ORIGINS
+        value: https://resume-ats-analyzer-eta.vercel.app
       - key: UPLOAD_MAX_MB
         value: "10"
